@@ -22,15 +22,17 @@ module scrambler_tb();
 	reg [31:0] scramblersuccessCounter;
 	reg finished;
 	
+	wire rdy_scrambler;
 	scrambler SCRAMBLER(.x(inputSerialBit),
-	.initialState(initState), .clk(clk), .reset(reset), .x_scrambled(scrambler_output), .MODE(1'b1)
+	.initialState(initState), .run(rdy_scrambler), .clk(clk), .reset(reset), .x_scrambled(scrambler_output)
 	// , .scrambled_seq(scrambled_seq)
-	, .valid(valid_scrambler));
+	, .valid(valid_scrambler), .rdy(rdy_scrambler));
 	
+	wire rdy_descrambler;
 	scrambler DESCRAMBLER(.x(scrambler_output),
-	.initialState(initState), .clk(clk), .reset(reset), .x_scrambled(descrambler_output), .MODE(1'b0)
+	.initialState(initState), .run(valid_scrambler), .clk(clk), .reset(reset), .x_scrambled(descrambler_output)
 	// , .scrambled_seq(descrambled_seq)
-	, .valid(valid_descrambler));
+	, .valid(valid_descrambler), .rdy(rdy_descrambler));
 	
 	initial begin
 		clk = 0;
